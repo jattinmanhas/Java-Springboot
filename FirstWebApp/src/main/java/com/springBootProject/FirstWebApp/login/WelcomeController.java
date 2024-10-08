@@ -1,23 +1,24 @@
 package com.springBootProject.FirstWebApp.login;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 
 @Controller
 @SessionAttributes("name") // we have to add this to call controllers where we want to use that attribute
-public class LoginController {
+public class WelcomeController {
 
-    private AuthenticationService authenticationService;
+ /*   private AuthenticationService authenticationService;
 
     public LoginController(AuthenticationService authenticationService){
         super();
         this.authenticationService = authenticationService;
-    }
+    }*/
 
 /*
     ----------- BASICS ------------------
@@ -35,12 +36,18 @@ public class LoginController {
 */
 
     // GET, POST
-    @RequestMapping(value="login",method = RequestMethod.GET)
-    public String login(){
-        return "login";
+    @RequestMapping(value="/",method = RequestMethod.GET)
+    public String goToWelcomePage(ModelMap model){
+        model.put("name", getLoggedInUsername());
+        return "welcome";
     }
 
-    @RequestMapping(value="login",method = RequestMethod.POST)
+    private String getLoggedInUsername(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    /*@RequestMapping(value="login",method = RequestMethod.POST)
     public String goToWelcomePage(@RequestParam String name, @RequestParam String password, ModelMap model){
         if(authenticationService.authenticate(name, password)){
             model.put("name", name);
@@ -49,5 +56,5 @@ public class LoginController {
         }
         model.put("errorMessage","Invalid Credentials, Please try again...");
         return "login";
-    }
+    }*/
 }
